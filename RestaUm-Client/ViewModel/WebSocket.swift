@@ -12,6 +12,7 @@ class WebSocket: ObservableObject {
     @Published var countOfPlayers: Int = 0
     @Published var isYourTurn: Bool = false
     @Published var alertMessage: String = ""
+    @Published var showAlert: Bool = false
     @Published var chatMessages: [ChatModel] = []
     private var choiceArr: [(Int, Int)] = []
     private var webSocketTask: URLSessionWebSocketTask?
@@ -100,23 +101,24 @@ class WebSocket: ObservableObject {
     private func verifyDTO(dataWrapper: DataWrapper) {
         DispatchQueue.main.async {
             switch dataWrapper.contentType {
-            case .ChatTextToClient:
-                print("ChatText")
             case .GameBoardToClient:
                 let content = try! JSONDecoder().decode([[Bool?]].self, from: dataWrapper.data)
                 self.matrix = content
-            case .PlayResponseToClient:
-                print("PlayResponse")
             case .NumberOfPlayerToClient:
                 let content = try! JSONDecoder().decode(Int.self, from: dataWrapper.data)
                 self.countOfPlayers = content
             case .TurnToClient:
                 let content = try! JSONDecoder().decode(Bool.self, from: dataWrapper.data)
                 self.isYourTurn = content
+            case .PlayResponseToClient:
+                let content = try! JSONDecoder().decode([[Bool?]].self, from: dataWrapper.data)
+                self.matrix = content
             case .Win:
-                print("win")
+                self.alertMessage = "Você Venceu!"
+                self.showAlert.toggle()
             case .Lose:
-                print("lose")
+                self.alertMessage = "Você Perdeu!"
+                self.showAlert.toggle()
             default:
                 print("Thats not sopost to be here")
             }

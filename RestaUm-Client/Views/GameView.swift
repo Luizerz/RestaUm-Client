@@ -21,9 +21,14 @@ struct GameView: View {
         } else {
             ZStack {
                 VStack {
-                    NavigationLink("Chat 💬") {
-                        ChatView(chatMessages: $viewModel.chatMessages) { msg in
-                            viewModel.sendMessage(msg)
+                    HStack {
+                        NavigationLink("Chat 💬") {
+                            ChatView(chatMessages: $viewModel.chatMessages) { msg in
+                                viewModel.sendMessage(msg)
+                            }
+                        }
+                        Button("Surrender 🏳️") {
+                            viewModel.sendData(DataWrapper(data: Data(), contentType: .SurrenderToServer))
                         }
                     }
                     .padding(.top, 25)
@@ -52,6 +57,9 @@ struct GameView: View {
                 .padding()
             }
             .navigationBarBackButtonHidden(true)
+            .alert(viewModel.alertMessage, isPresented: $viewModel.showAlert) {
+                Button("OK!") {}
+            }
         }
     }
 }

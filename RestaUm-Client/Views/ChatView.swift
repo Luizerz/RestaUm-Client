@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct ChatView: View {
-    @Binding var chatMessages: [ChatModel] {
-        didSet {
-            print(chatMessages.count)
-        }
-    }
+    @Binding var chatMessages: [ChatModel]
     @State var message: String = ""
     var onSend: (String) -> ()
     var body: some View {
